@@ -1,6 +1,9 @@
 import aiohttp_jinja2
 from aiohttp import web
 
+from aiohttpdemo_polls.marshall.question import QuestionSchema
+from aiohttpdemo_polls.marshall.choice import ChoiceSchema
+
 from . import db
 
 
@@ -18,14 +21,24 @@ async def poll(request):
     async with request.app['db'].acquire() as conn:
         question_id = request.match_info['question_id']
         try:
-            question, choices = await db.get_question(conn,
-                                                      question_id)
+            question, choices = await db.get_question(conn, question_id)
         except db.RecordNotFound as e:
             raise web.HTTPNotFound(text=str(e))
-        return {
-            'question': question,
-            'choices': choices
+        return {'question': question, 'choices': choices}
+
+
+async def journal_poll(request):
+    async with request.app['db'].acquire() as conn:
+        question_id = request.match_info['question_id']
+        try:
+            question, choices = await db.get_question(conn, question_id)
+        except db.RecordNotFound as e:
+            raise web.HTTPNotFound(text=str(e))
+        res = {
+            'question': QuestionSchema().dump(dict(question))[0],
+            'choices': ChoiceSchema(many=True).dump(map(dict, choices))[0]
         }
+        return web.json_response(res)
 
 
 @aiohttp_jinja2.template('results.html')
@@ -34,15 +47,11 @@ async def results(request):
         question_id = request.match_info['question_id']
 
         try:
-            question, choices = await db.get_question(conn,
-                                                      question_id)
+            question, choices = await db.get_question(conn, question_id)
         except db.RecordNotFound as e:
             raise web.HTTPNotFound(text=str(e))
 
-        return {
-            'question': question,
-            'choices': choices
-        }
+        return {'question': question, 'choices': choices}
 
 
 async def vote(request):
