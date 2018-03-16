@@ -4,9 +4,12 @@ from aiohttpdemo_polls.db import choice
 
 
 async def test_index(cli, tables_and_data):
-    response = await cli.get('/poll/1')
+    response = await cli.get('/')
     assert response.status == 200
-    assert 'What\'s new?' in await response.text()
+    resp_text = await response.text()
+    assert 'Main' in resp_text
+    assert 'What' in resp_text
+    assert 'new?' in resp_text
 
 
 async def test_results(cli, tables_and_data):
