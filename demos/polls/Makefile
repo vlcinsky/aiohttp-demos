@@ -4,7 +4,7 @@ FLAGS=
 
 
 flake:
-	flake8 aiohttpdemo_polls
+	flake8 dpo_tis_journal
 
 test:
 	pytest tests

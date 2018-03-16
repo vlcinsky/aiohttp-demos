@@ -6,10 +6,10 @@ import jinja2
 
 import aiohttp_jinja2
 from aiohttp import web
-from aiohttpdemo_polls.db import close_pg, init_pg
-from aiohttpdemo_polls.middlewares import setup_middlewares
-from aiohttpdemo_polls.routes import setup_routes
-from aiohttpdemo_polls.utils import TRAFARET
+from dpo_tis_journal.db import close_pg, init_pg
+from dpo_tis_journal.middlewares import setup_middlewares
+from dpo_tis_journal.routes import setup_routes
+from dpo_tis_journal.utils import TRAFARET
 from trafaret_config import commandline
 
 
@@ -32,7 +32,7 @@ def init(argv):
 
     # setup Jinja2 template renderer
     aiohttp_jinja2.setup(
-        app, loader=jinja2.PackageLoader('aiohttpdemo_polls', 'templates'))
+        app, loader=jinja2.PackageLoader('dpo_tis_journal', 'templates'))
 
     # create connection to the database
     app.on_startup.append(init_pg)

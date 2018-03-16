@@ -1,6 +1,6 @@
 """Require running database server"""
 
-from aiohttpdemo_polls.db import choice
+from dpo_tis_journal.db import choice
 
 
 async def test_index(cli, tables_and_data):

@@ -2,7 +2,7 @@ import pathlib
 
 import pytest
 
-from aiohttpdemo_polls.main import init
+from dpo_tis_journal.main import init
 from .init_db import (
     get_config,
     setup_db,

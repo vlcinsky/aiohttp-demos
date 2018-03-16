@@ -3,7 +3,7 @@ import pathlib
 from sqlalchemy import create_engine, MetaData
 import yaml
 
-from aiohttpdemo_polls.db import question, choice
+from dpo_tis_journal.db import question, choice
 
 
 DSN = "postgresql://{user}:{password}@{host}:{port}/{database}"

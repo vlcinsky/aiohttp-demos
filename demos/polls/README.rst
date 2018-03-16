@@ -21,7 +21,7 @@ Run
 ---
 Run application::
 
-    $ python -m aiohttpdemo_polls
+    $ python -m dpo_tis_journal
 
 Open browser::
 

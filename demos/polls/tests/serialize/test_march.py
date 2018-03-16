@@ -1,7 +1,7 @@
 import pytest
 import datetime
-from aiohttpdemo_polls.marshall.question import QuestionSchema
-from aiohttpdemo_polls.marshall.choice import ChoiceSchema
+from dpo_tis_journal.marshall.question import QuestionSchema
+from dpo_tis_journal.marshall.choice import ChoiceSchema
 
 
 @pytest.fixture

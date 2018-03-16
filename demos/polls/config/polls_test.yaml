@@ -1,7 +1,7 @@
 postgres:
-  database: test_aiohttpdemo_polls
-  user: test_aiohttpdemo_user
-  password: aiohttpdemo_pass
+  database: test_dpo_tis_journal
+  user: test_dpo_tis_journal
+  password: dpo_tis_journal
   host: localhost
   port: 5432
   minsize: 1
