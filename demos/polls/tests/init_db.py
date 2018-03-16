@@ -3,8 +3,7 @@ import pathlib
 from sqlalchemy import create_engine, MetaData
 import yaml
 
-from dpo_tis_journal.db import question, choice
-
+from dpo_tis_journal.db import question, choice, user_journal
 
 DSN = "postgresql://{user}:{password}@{host}:{port}/{database}"
 BASE_DIR = pathlib.Path(__file__).parent.parent
@@ -17,9 +16,11 @@ def get_config(path):
 
 
 ADMIN_DB_URL = DSN.format(
-    user='postgres', password='postgres', database='postgres',
-    host='localhost', port=5432
-)
+    user='postgres',
+    password='postgres',
+    database='postgres',
+    host='localhost',
+    port=5432)
 
 admin_engine = create_engine(ADMIN_DB_URL, isolation_level='AUTOCOMMIT')
 
@@ -43,8 +44,8 @@ def setup_db(config):
     conn.execute("DROP ROLE IF EXISTS %s" % db_user)
     conn.execute("CREATE USER %s WITH PASSWORD '%s'" % (db_user, db_pass))
     conn.execute("CREATE DATABASE %s ENCODING 'UTF8'" % db_name)
-    conn.execute("GRANT ALL PRIVILEGES ON DATABASE %s TO %s" %
-                 (db_name, db_user))
+    conn.execute("GRANT ALL PRIVILEGES ON DATABASE %s TO %s" % (db_name,
+                                                                db_user))
     conn.close()
 
 
@@ -66,24 +67,53 @@ def teardown_db(config):
 
 def create_tables(engine=test_engine):
     meta = MetaData()
-    meta.create_all(bind=engine, tables=[question, choice])
+    meta.create_all(bind=engine, tables=[question, choice, user_journal])
 
 
 def drop_tables(engine=test_engine):
     meta = MetaData()
-    meta.drop_all(bind=engine, tables=[question, choice])
+    meta.drop_all(bind=engine, tables=[question, choice, user_journal])
 
 
 def sample_data(engine=test_engine):
     conn = engine.connect()
-    conn.execute(question.insert(), [
-        {'question_text': 'What\'s new?',
-         'pub_date': '2015-12-15 17:17:49.629+02'}
-    ])
+    conn.execute(question.insert(), [{
+        'question_text': 'What\'s new?',
+        'pub_date': '2015-12-15 17:17:49.629+02'
+    }])
     conn.execute(choice.insert(), [
-        {'choice_text': 'Not much', 'votes': 0, 'question_id': 1},
-        {'choice_text': 'The sky', 'votes': 0, 'question_id': 1},
-        {'choice_text': 'Just hacking again', 'votes': 0, 'question_id': 1},
+        {
+            'choice_text': 'Not much',
+            'votes': 0,
+            'question_id': 1
+        },
+        {
+            'choice_text': 'The sky',
+            'votes': 0,
+            'question_id': 1
+        },
+        {
+            'choice_text': 'Just hacking again',
+            'votes': 0,
+            'question_id': 1
+        },
+    ])
+    conn.execute(user_journal.insert(), [
+        {
+            'dtime': '2015-12-15 17:17:49.629+02',
+            'action': 'login',
+            'user_name': 'javl'
+        },
+        {
+            'dtime': '2015-12-15 17:17:52.629+02',
+            'action': 'login',
+            'user_name': 'pebu'
+        },
+        {
+            'dtime': '2015-12-15 17:17:54.629+02',
+            'action': 'login',
+            'user_name': 'roho'
+        },
     ])
     conn.close()
 

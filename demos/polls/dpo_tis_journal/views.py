@@ -3,6 +3,7 @@ from aiohttp import web
 
 from dpo_tis_journal.marshall.question import QuestionSchema
 from dpo_tis_journal.marshall.choice import ChoiceSchema
+from dpo_tis_journal.marshall.user_journal import UserJournalSchema
 
 from . import db
 
@@ -38,6 +39,17 @@ async def journal_poll(request):
             'question': QuestionSchema().dump(dict(question))[0],
             'choices': ChoiceSchema(many=True).dump(map(dict, choices))[0]
         }
+        return web.json_response(res)
+
+
+async def journal_user(request):
+    async with request.app['db'].acquire() as conn:
+        user_name = request.match_info.get('user_name')
+        try:
+            records = await db.get_user_journal(conn, user_name)
+        except db.RecordNotFound as e:
+            raise web.HTTPNotFound(text=str(e))
+        res = UserJournalSchema(many=True).dump(map(dict, records))[0]
         return web.json_response(res)
 
 

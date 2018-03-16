@@ -1,16 +1,23 @@
 import aiopg.sa
 from sqlalchemy import (
     MetaData, Table, Column, ForeignKey,
-    Integer, String, Date
+    Integer, String, Date, DateTime
 )
 
-__all__ = ['question', 'choice']
+__all__ = ['question', 'choice', 'user_journal']
 
 meta = MetaData()
 
+user_journal = Table(
+    'user_journal', meta,
+
+    Column('dtime', DateTime),
+    Column('action', String(200), nullable=False),
+    Column('user_name', String(30), nullable=False)
+)
+
 question = Table(
     'question', meta,
-
     Column('id', Integer, primary_key=True),
     Column('question_text', String(200), nullable=False),
     Column('pub_date', Date, nullable=False)
@@ -50,6 +57,16 @@ async def init_pg(app):
 async def close_pg(app):
     app['db'].close()
     await app['db'].wait_closed()
+
+
+async def get_user_journal(conn, user_name=None):
+    query = user_journal.select()
+    if user_name:
+        query = query.where(user_journal.c.user_name == user_name)
+    query = query.order_by(user_journal.c.dtime)
+    result = await conn.execute(query)
+    records = await result.fetchall()
+    return records
 
 
 async def get_question(conn, question_id):
