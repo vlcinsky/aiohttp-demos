@@ -1,4 +1,5 @@
--e .
-pytest-aiohttp==0.1.3
-flake8
+aiohttp
+aiohttp-jinja2
+aiopg[sa]
 marshmallow
+trafaret-config
